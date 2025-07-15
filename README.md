@@ -121,7 +121,7 @@ You may not, without express written permission from WastedPatriot:
 
 Any unauthorized use is strictly prohibited and may result in civil and criminal penalties.
 
-For inquiries or permissions, contact: \[your email or GitHub]
+For inquiries or permissions, contact
 
 ---
 
