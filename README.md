@@ -1,65 +1,93 @@
-💥 M.A.B.E.L. 
 
-– Modular Autonomous Breach & Exploitation Logic
-A next-gen AI that scans, exploits, and adapts — autonomously.
+💥 M.A.B.E.L.
 
-🧬 Overview
-M.A.B.E.L. is a private, modular AI-driven framework designed for advanced cybersecurity research, red teaming, and autonomous exploitation. It combines real-time decision-making, visual feedback, and ethical automation to push the boundaries of what’s possible in offensive security — all under strict user supervision.
 
-🧠 Core Capabilities
-🔁 Autonomous Multi-Stage Hacking
-Executes complex attack chains with user confirmation at each stage.
 
-🧩 Modular Plugin System
-Easily extend functionality with custom modules and payloads.
+Overview
+Modular Autonomous Breach & Exploitation Logic
+M.A.B.E.L. is a next-gen AI that scans, exploits, and adapts — autonomously.
 
-🧠 AI-Driven Exploit & Payload Generation
-Uses ML to craft novel exploits and adapt payloads in real time.
+M.A.B.E.L. is a private, modular AI-driven framework for advanced cybersecurity research, red teaming, and autonomous exploitation. It combines real-time decision-making, visual feedback, and ethical automation under strict user supervision.
 
-🛰️ Threat Intelligence Integration
-Pulls live CVE data and threat feeds to stay ahead of the curve.
+Features
+Autonomous Multi-Stage Hacking: Executes complex attack chains with user confirmation at each stage.
 
-🧪 Self-Learning Engine
-Continuously retrains on new data and outcomes to improve performance.
+Modular Plugin System: Easily extend functionality with custom modules and payloads.
 
-🕵️ Stealth & Anonymization
-Supports VPNs, Tor, proxy chaining, and spoofing for covert ops.
+AI-Driven Exploit & Payload Generation: Uses ML to craft novel exploits and adapt payloads in real time.
 
-📹 CCTV & IoT Exploitation
-Live feed access and control of vulnerable smart devices.
+Threat Intelligence Integration: Pulls live CVE data and threat feeds to stay ahead of the curve.
 
-🧬 Malware Simulation in Isolated VMs
-Test crypto-jacking, ransomware, and more in safe environments.
+Self-Learning Engine: Continuously retrains on new data and outcomes to improve performance.
 
-🛑 Emergency Kill Switch
-Instantly halt or roll back operations with a single command.
+Stealth & Anonymization: Supports VPNs, Tor, proxy chaining, and spoofing for covert ops.
 
-🐞 Bug Bounty API Integration
-Auto-report findings to platforms like HackerOne and Bugcrowd.
+CCTV & IoT Exploitation: Live feed access and control of vulnerable smart devices.
 
-☁️ Distributed AI Training
-Train models across cloud/swarm environments for scalability.
+Malware Simulation in Isolated VMs: Test crypto-jacking, ransomware, and more in safe environments.
 
-🛡️ Adaptive Defense Detection
-Identifies and counters blue team responses in real time.
+Emergency Kill Switch: Instantly halt or roll back operations with a single command.
 
-🏢 Image-Based Targeting
-Use photos (e.g., buildings) to identify and breach associated networks.
+Bug Bounty API Integration: Auto-report findings to platforms like HackerOne and Bugcrowd.
 
-💰 Wallet & Coin Management
-Proxy wallets, stealth transfers, and crypto asset tracking.
+Distributed AI Training: Train models across cloud/swarm environments for scalability.
 
-💤 Idle-Time Learning
-Optional background training when the system is idle.
+Adaptive Defense Detection: Identifies and counters blue team responses in real time.
 
-🕳️ Steganography & Covert Channels
-Secure communication via hidden data streams.
+Image-Based Targeting: Use photos (e.g., buildings) to identify and breach associated networks.
 
-🧰 Hardware-Aware Tool Suggestions
-Detects system specs and recommends optimal tools.
+Wallet & Coin Management: Proxy wallets, stealth transfers, and crypto asset tracking.
 
-📊 Explainable AI Reports
-Real-time reasoning and decision logs for transparency.
+Idle-Time Learning: Optional background training when the system is idle.
 
-⚠️ Disclaimer
+Steganography & Covert Channels: Secure communication via hidden data streams.
+
+Hardware-Aware Tool Suggestions: Detects system specs and recommends optimal tools.
+
+Explainable AI Reports: Real-time reasoning and decision logs for transparency.
+
+Getting Started
+Clone the repository:
+
+bash
+Copy
+Edit
+git clone https://github.com/WastedPatriot/M.A.B.E.L.git
+cd M.A.B.E.L
+Install dependencies:
+
+bash
+Copy
+Edit
+pip install -r requirements.txt
+Run M.A.B.E.L.:
+
+bash
+Copy
+Edit
+python mabel.py
+Usage
+Start a scan:
+
+bash
+Copy
+Edit
+python mabel.py --mode scan --target 192.168.1.1
+Load custom module:
+
+bash
+Copy
+Edit
+python mabel.py --load-module plugins/myexploit.py
+Configuration
+Describe any important config files or options here. (e.g., config.json, .env)
+
+Contributing
+Contributions are welcome! Please open issues or submit pull requests for improvements and bug fixes. For major changes, discuss via issues first.
+
+License
+This project is licensed under the MIT License. See LICENSE for details.
+
+Disclaimer
 This tool is intended for educational and authorized security testing purposes only. Unauthorized use is strictly prohibited.
+
