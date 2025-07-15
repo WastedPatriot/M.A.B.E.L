@@ -108,18 +108,25 @@ Contributions are welcome! Please open issues or submit pull requests for improv
 
 ## 📄 License
 
-Copyright © 2025 WastedPatriot
-All rights reserved.
+![Do Not Fork](https://img.shields.io/badge/DO%20NOT-FORK-critical?style=for-the-badge\&logo=github)
 
-This software and associated documentation files (the “Software”) are the exclusive property of the copyright holder(s). **Unauthorized copying, modification, distribution, or use for commercial purposes is strictly prohibited.**
+This software is proprietary and confidential.
 
-You may use, copy, and modify the Software **for personal, non-commercial, and educational purposes only**. Any commercial use, distribution, sublicensing, or sale of the Software or its components, in whole or in part, is forbidden without explicit written permission from the copyright holder(s).
+© 2025 WastedPatriot. All rights reserved.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+You may not, without express written permission from WastedPatriot:
+
+* Use, copy, modify, merge, publish, distribute, sublicense, sell, or otherwise make available any part of the Software.
+* Reverse engineer, decompile, or disassemble the Software.
+
+Any unauthorized use is strictly prohibited and may result in civil and criminal penalties.
+
+For inquiries or permissions, contact: \[your email or GitHub]
 
 ---
 
 <a name="disclaimer"></a>
+
 
 ## ⚠️ Disclaimer
 
@@ -127,7 +134,6 @@ This tool is intended for educational and authorized security testing purposes o
 
 ---
 
----
 
 <p align="center">
   <img src="https://img.shields.io/badge/readme%20generated%20with-readme.so-blue?style=flat-square" />
