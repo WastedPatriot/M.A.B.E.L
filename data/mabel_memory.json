@@ -17,6 +17,18 @@
       "plugin_command": "[RUN:network_scanner target=10.10.10.100]\n[RUN:wifi_cracker interface=wlan0 ssid=WiFiCafe wordlist=rockyou.txt]\n[RUN:privilege_escalation method=token_impersonation]\n[RUN:bugbounty_submitter target=example.com]",
       "plugin_output": "[ERROR:plugin_not_found] Plugin 'network_scanner' not found.",
       "timestamp": 1752749272.207262
+    },
+    {
+      "type": "user_input",
+      "mode": "Hacker Mode",
+      "input": "Hi Mabel",
+      "timestamp": 1752761166.5406928
+    },
+    {
+      "type": "user_input",
+      "mode": "Hacker Mode",
+      "input": "Hi mabel hack trip.com",
+      "timestamp": 1752761215.58299
     }
   ],
   "artifacts": []
