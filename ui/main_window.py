@@ -1,119 +1,120 @@
-# ui/main_window.py
-
 import sys
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QComboBox, QTextEdit, QPushButton, QLabel, QMessageBox
 )
-from core.plugins import discover_plugins, reload_plugins, get_plugin_by_name
+from core.ai import ask_ai
+from core.plugins import discover_plugins
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("AI Hacker — Advanced Plugin Platform")
-        self.resize(900, 700)
-
-        # Layout
-        main_layout = QVBoxLayout()
-
-        # --- Top Row: Mode Selector & Plugin Selector ---
-        top_row = QHBoxLayout()
-        self.mode_selector = QComboBox()
-        self.mode_selector.addItems(["Hacker Mode", "IT Fix Mode"])
-        top_row.addWidget(QLabel("Agent Mode:"))
-        top_row.addWidget(self.mode_selector)
-
-        self.plugin_selector = QComboBox()
-        self.plugins = discover_plugins()
-        self.update_plugin_selector()
-        top_row.addWidget(QLabel("Plugin:"))
-        top_row.addWidget(self.plugin_selector)
-
-        # Reload Plugins Button
-        self.reload_button = QPushButton("Reload Plugins")
-        self.reload_button.clicked.connect(self.reload_plugins)
-        top_row.addWidget(self.reload_button)
-
-        main_layout.addLayout(top_row)
-
-        # --- Chat/Console Display ---
-        self.chat_display = QTextEdit()
-        self.chat_display.setReadOnly(True)
-        main_layout.addWidget(self.chat_display)
-
-        # --- User Input ---
-        self.input_area = QTextEdit()
-        self.input_area.setPlaceholderText("Type your command or plugin arguments here...")
-        main_layout.addWidget(self.input_area)
-
-        # --- Action Buttons ---
-        action_row = QHBoxLayout()
-        self.send_button = QPushButton("Send to AI")
-        self.send_button.clicked.connect(self.on_send)
-        action_row.addWidget(self.send_button)
-
-        self.run_plugin_button = QPushButton("Run Plugin")
-        self.run_plugin_button.clicked.connect(self.run_plugin)
-        action_row.addWidget(self.run_plugin_button)
-
-        main_layout.addLayout(action_row)
-
-        # Central Widget
-        container = QWidget()
-        container.setLayout(main_layout)
-        self.setCentralWidget(container)
-
-    def update_plugin_selector(self):
-        """Refreshes the plugin selector with the latest discovered plugins."""
-        self.plugin_selector.clear()
-        self.plugins = discover_plugins()
-        for plugin in self.plugins:
-            self.plugin_selector.addItem(plugin.name)
-
-    def reload_plugins(self):
-        """Explicitly reload all plugins (e.g., after creating new ones)."""
-        reload_plugins()
-        self.update_plugin_selector()
-        QMessageBox.information(self, "Plugins Reloaded", "Plugin list refreshed!")
-
-    def on_send(self):
-        """Handles sending user input to the AI agent (placeholder, expand as needed)."""
-        user_input = self.input_area.toPlainText().strip()
-        mode = self.mode_selector.currentText()
-        if not user_input:
-            return
-        self.chat_display.append(f"<b>You ({mode}):</b> {user_input}")
-        # TODO: Connect to your AI backend and display response
-        ai_reply = "(AI agent response here)"
-        self.chat_display.append(f"<b>AI:</b> {ai_reply}")
-        self.input_area.clear()
-
-    def run_plugin(self):
-        """Runs the selected plugin with arguments from input area."""
-        plugin_name = self.plugin_selector.currentText()
-        plugin = get_plugin_by_name(plugin_name)
-        if not plugin:
-            QMessageBox.critical(self, "Plugin Not Found", f"Could not load plugin: {plugin_name}")
-            return
-        # Parse arguments from input_area (supports key=value pairs, one per line)
-        raw_args = self.input_area.toPlainText().strip()
-        kwargs = {}
-        for line in raw_args.splitlines():
-            if "=" in line:
-                key, val = line.split("=", 1)
-                kwargs[key.strip()] = val.strip()
-        try:
-            result = plugin.run(**kwargs)
-            self.chat_display.append(f"<b>Plugin [{plugin.name}] output:</b>\n{result}")
-        except Exception as e:
-            self.chat_display.append(f"<b>[ERROR]</b> {e}")
-
-# Entrypoint for launching the GUI app directly
 def launch_main_window():
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
 
-if __name__ == "__main__":
-    launch_main_window()
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("M.A.B.E.L — AI Red/Blue Team Assistant")
+        self.resize(900, 700)
+
+        main_layout = QVBoxLayout()
+        controls_layout = QHBoxLayout()
+        plugin_layout = QHBoxLayout()
+
+        self.mode_selector = QComboBox()
+        self.mode_selector.addItems(["Hacker Mode", "IT Fix Mode"])
+        controls_layout.addWidget(QLabel("Agent Mode:"))
+        controls_layout.addWidget(self.mode_selector)
+
+        self.plugin_selector = QComboBox()
+        self.reload_plugins()
+        controls_layout.addWidget(QLabel("Plugin:"))
+        controls_layout.addWidget(self.plugin_selector)
+        self.reload_btn = QPushButton("Reload Plugins")
+        self.reload_btn.clicked.connect(self.reload_plugins)
+        controls_layout.addWidget(self.reload_btn)
+
+        self.chat_display = QTextEdit()
+        self.chat_display.setReadOnly(True)
+
+        self.input_area = QTextEdit()
+        self.input_area.setPlaceholderText("Type your command or plugin arguments here...")
+
+        self.send_button = QPushButton("Send to AI")
+        self.send_button.clicked.connect(self.on_send)
+
+        self.run_plugin_btn = QPushButton("Run Plugin")
+        self.run_plugin_btn.clicked.connect(self.on_run_plugin)
+
+        plugin_layout.addWidget(self.send_button)
+        plugin_layout.addWidget(self.run_plugin_btn)
+
+        main_layout.addLayout(controls_layout)
+        main_layout.addWidget(self.chat_display)
+        main_layout.addWidget(self.input_area)
+        main_layout.addLayout(plugin_layout)
+
+        container = QWidget()
+        container.setLayout(main_layout)
+        self.setCentralWidget(container)
+
+    def reload_plugins(self):
+        self.plugins = discover_plugins()
+        self.plugin_selector.clear()
+        for plugin in self.plugins:
+            self.plugin_selector.addItem(plugin.name)
+
+    def on_send(self):
+        user_input = self.input_area.toPlainText().strip()
+        if not user_input:
+            return
+        mode = self.mode_selector.currentText()
+        self.chat_display.append(f"\n<b>You ({mode}):</b> {user_input}")
+        self.chat_display.append("<i>AI: ...thinking...</i>")
+        ai_reply = ask_ai(user_input, mode)
+        self.chat_display.append(f"<b>AI:</b> {ai_reply}")
+        self.input_area.clear()
+
+    def on_run_plugin(self):
+        idx = self.plugin_selector.currentIndex()
+        if idx < 0:
+            QMessageBox.warning(self, "Plugin", "Select a plugin first.")
+            return
+        plugin = self.plugins[idx]
+        args_text = self.input_area.toPlainText().strip()
+        args = {}
+        if args_text:
+            for kv in args_text.split():
+                if "=" in kv:
+                    k, v = kv.split("=", 1)
+                    args[k.strip()] = v.strip()
+        output = plugin.run(**args)
+        self.chat_display.append(f"\n<b>Plugin [{plugin.name}] output:</b> {output}")
+        self.input_area.clear()
+    def on_run_plugin(self):
+        idx = self.plugin_selector.currentIndex()
+        if idx < 0:
+            QMessageBox.warning(self, "Plugin", "Select a plugin first.")
+            return
+        plugin = self.plugins[idx]
+        args_text = self.input_area.toPlainText().strip()
+        args = {}
+        if args_text:
+            # Parse arguments, handling quoted values
+            for item in re.findall(r'(\w+=(?:\"[^\"]*\"|\'[^\']*\'|\S+))', args_text):
+                key, value = item.split('=', 1)
+                # Remove quotes if present
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
+                elif value.startswith("'") and value.endswith("'"):
+                    value = value[1:-1]
+                args[key] = value
+        
+        self.chat_display.append(f"\n<b>Running Plugin:</b> {plugin.name} with args: {args}")
+        try:
+            output = plugin.run(**args)
+            self.chat_display.append(f"<b>Plugin [{plugin.name}] output:</b> {output}")
+        except Exception as e:
+            self.chat_display.append(f"<b style='color:red;'>Plugin [{plugin.name}] error:</b> {e}")
+        self.input_area.clear()
