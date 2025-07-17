@@ -1,24 +1,17 @@
-# core/plugins.py
-
 import os
 import sys
 import importlib
-import logging
 
-PLUGIN_FOLDER = "plugins"
+PLUGIN_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'plugins')
+PLUGIN_FOLDER = os.path.abspath(PLUGIN_FOLDER)
 
-def discover_plugins() -> list:
-    """
-    Dynamically discover and load all plugins in the plugins/ folder.
-    Supports hot reload for rapid development.
-    """
+def discover_plugins():
     plugins = []
-    sys.path.insert(0, PLUGIN_FOLDER)  # Temporarily add plugin dir to sys.path
+    sys.path.insert(0, PLUGIN_FOLDER)
     for filename in os.listdir(PLUGIN_FOLDER):
         if filename.endswith(".py") and not filename.startswith("_"):
             modulename = filename[:-3]
             try:
-                # Hot reload if module is already loaded
                 if modulename in sys.modules:
                     module = importlib.reload(sys.modules[modulename])
                 else:
@@ -27,21 +20,38 @@ def discover_plugins() -> list:
                     plugin = module.get_plugin()
                     plugins.append(plugin)
             except Exception as e:
-                logging.error(f"[PLUGIN LOAD ERROR] {modulename}: {e}")
+                print(f"Plugin load error ({modulename}): {e}")
     sys.path.pop(0)
     return plugins
 
-def get_plugin_by_name(name: str):
-    """
-    Retrieve a plugin by its name (case-insensitive).
-    """
+def get_plugin_by_name(name):
     for plugin in discover_plugins():
         if plugin.name.lower() == name.lower():
             return plugin
     return None
 
 def reload_plugins():
-    """
-    Utility for explicit reload; returns new plugin list.
-    """
     return discover_plugins()
+def get_plugin_by_name_dynamic(name):
+    """
+    Dynamically loads and returns a plugin by its name.
+    This is useful for cases where the plugin might have been created
+    after the initial discover_plugins call.
+    """
+    safe_name = "".join(c for c in name if c.isalnum() or c == "_").lower()
+    modulename = safe_name
+    try:
+        if modulename in sys.modules:
+            module = importlib.reload(sys.modules[modulename])
+        else:
+            # Add plugin folder to path if not already there
+            if PLUGIN_FOLDER not in sys.path:
+                sys.path.insert(0, PLUGIN_FOLDER)
+            module = importlib.import_module(modulename)
+            if PLUGIN_FOLDER in sys.path:
+                sys.path.remove(PLUGIN_FOLDER) # Clean up sys.path
+        if hasattr(module, "get_plugin"):
+            return module.get_plugin()
+    except Exception as e:
+        print(f"Dynamic plugin load error ({modulename}): {e}")
+    return None

@@ -1,10 +1,12 @@
 import sys
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QComboBox, QTextEdit, QPushButton, QLabel, QMessageBox
+    QComboBox, QTextEdit, QPushButton, QLabel, QMessageBox,
 )
 from core.ai import ask_ai
 from core.plugins import discover_plugins
+import re
+from core.memory import memory
 
 def launch_main_window():
     app = QApplication(sys.argv)
@@ -70,28 +72,20 @@ class MainWindow(QMainWindow):
         if not user_input:
             return
         mode = self.mode_selector.currentText()
+        
         self.chat_display.append(f"\n<b>You ({mode}):</b> {user_input}")
         self.chat_display.append("<i>AI: ...thinking...</i>")
+        
+        # Log user input
+        memory.log({"type": "user_input", "mode": mode, "input": user_input})
+
         ai_reply = ask_ai(user_input, mode)
+        
+        # The ask_ai function already logs its own raw response and plugin actions.
+        # We just need to display the final result.
         self.chat_display.append(f"<b>AI:</b> {ai_reply}")
         self.input_area.clear()
 
-    def on_run_plugin(self):
-        idx = self.plugin_selector.currentIndex()
-        if idx < 0:
-            QMessageBox.warning(self, "Plugin", "Select a plugin first.")
-            return
-        plugin = self.plugins[idx]
-        args_text = self.input_area.toPlainText().strip()
-        args = {}
-        if args_text:
-            for kv in args_text.split():
-                if "=" in kv:
-                    k, v = kv.split("=", 1)
-                    args[k.strip()] = v.strip()
-        output = plugin.run(**args)
-        self.chat_display.append(f"\n<b>Plugin [{plugin.name}] output:</b> {output}")
-        self.input_area.clear()
     def on_run_plugin(self):
         idx = self.plugin_selector.currentIndex()
         if idx < 0:

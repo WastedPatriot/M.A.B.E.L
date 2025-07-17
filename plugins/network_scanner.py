@@ -3,32 +3,17 @@ import subprocess
 
 class NetworkScannerPlugin(PluginBase):
     @property
-    def name(self):
-        return "Network Scanner"
-
+    def name(self): return "Network Scanner"
     @property
-    def description(self):
-        return "Scans a target IP or subnet using nmap. Args: target or ip"
+    def description(self): return "Scans a target IP or subnet for open ports and services using Nmap."
 
-    def run(self, target="127.0.0.1", ip=None, **kwargs):
-        # Accept either 'target' or 'ip' as argument for compatibility with AI
-        scan_target = ip if ip is not None else target
-        nmap_path = "nmap"  # Or full path if needed
+    def run(self, target="127.0.0.1", **kwargs):
         try:
-            result = subprocess.run(
-                [nmap_path, "-T4", "-F", scan_target],
-                capture_output=True,
-                text=True,
-                timeout=30   # Prevent hanging
-            )
-            if result.returncode == 0:
-                return f"Scan result for {scan_target}:\n{result.stdout}"
-            else:
-                return f"Scan failed (code {result.returncode}):\n{result.stderr}"
-        except subprocess.TimeoutExpired:
-            return "Scan timed out after 30 seconds."
+            cmd = ["nmap", "-T4", "-A", target]
+            result = subprocess.check_output(cmd, universal_newlines=True)
+            return result
         except Exception as e:
-            return f"Scan failed: {e}"
+            return f"Network scan failed: {e}"
 
 def get_plugin():
     return NetworkScannerPlugin()

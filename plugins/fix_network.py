@@ -3,25 +3,19 @@ import subprocess
 
 class FixNetworkPlugin(PluginBase):
     @property
-    def name(self):
-        return "Fix Network"
+    def name(self): return "Fix Network"
     @property
-    def description(self):
-        return "Repairs Windows network stack (flush DNS, reset adapter). No args."
-    def run(self, **kwargs):
-        cmds = [
-            ["ipconfig", "/flushdns"],
-            ["netsh", "int", "ip", "reset"],
-            ["netsh", "winsock", "reset"]
-        ]
-        out = ""
-        for cmd in cmds:
-            try:
-                result = subprocess.check_output(cmd, text=True)
-                out += f"{' '.join(cmd)}:\n{result}\n"
-            except Exception as e:
-                out += f"{' '.join(cmd)} failed: {e}\n"
-        return out
+    def description(self): return "Diagnoses and repairs network connectivity issues."
+
+    def run(self, target="local", **kwargs):
+        try:
+            # Flush DNS and reset network adapters (Windows)
+            subprocess.call("ipconfig /flushdns", shell=True)
+            subprocess.call("netsh winsock reset", shell=True)
+            subprocess.call("netsh int ip reset", shell=True)
+            return "Network stack reset and DNS flushed."
+        except Exception as e:
+            return f"Network repair failed: {e}"
 
 def get_plugin():
     return FixNetworkPlugin()

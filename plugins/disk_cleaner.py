@@ -1,21 +1,27 @@
 from core.plugin_base import PluginBase
-import subprocess
+import os
+import shutil
 
 class DiskCleanerPlugin(PluginBase):
     @property
-    def name(self):
-        return "Disk Cleaner"
+    def name(self): return "Disk Cleaner"
     @property
-    def description(self):
-        return "Runs Windows Disk Cleanup (cleanmgr). No args."
-    def run(self, **kwargs):
+    def description(self): return "Deletes temporary files and frees disk space."
+
+    def run(self, target="local", **kwargs):
         try:
-            result = subprocess.check_output(
-                ["cleanmgr", "/sagerun:1"], text=True
-            )
-            return f"Disk cleanup started:\n{result}"
+            count = 0
+            temp_dir = os.getenv('TEMP') or '/tmp'
+            for root, dirs, files in os.walk(temp_dir):
+                for name in files:
+                    try:
+                        os.remove(os.path.join(root, name))
+                        count += 1
+                    except Exception:
+                        pass
+            return f"Deleted {count} temp files from {temp_dir}."
         except Exception as e:
-            return f"Disk cleanup failed: {e}"
+            return f"Disk cleaner failed: {e}"
 
 def get_plugin():
     return DiskCleanerPlugin()

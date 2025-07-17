@@ -3,19 +3,19 @@ import subprocess
 
 class EventLogParserPlugin(PluginBase):
     @property
-    def name(self):
-        return "Event Log Parser"
+    def name(self): return "Event Log Parser"
     @property
-    def description(self):
-        return "Shows last 10 System event log entries. No args."
-    def run(self, **kwargs):
+    def description(self): return "Parses Windows Event Logs for suspicious activity."
+
+    def run(self, log="System", **kwargs):
         try:
-            result = subprocess.check_output(
-                ["wevtutil", "qe", "System", "/c:10", "/f:text"], text=True
+            # On Windows, use 'wevtutil' to query logs
+            output = subprocess.check_output(
+                ["wevtutil", "qe", log, "/c:10", "/f:text"], universal_newlines=True
             )
-            return f"Last 10 System event log entries:\n{result}"
+            return f"Last 10 events from {log}:\n{output}"
         except Exception as e:
-            return f"Event log parse failed: {e}"
+            return f"Event log parsing failed: {e}"
 
 def get_plugin():
     return EventLogParserPlugin()
