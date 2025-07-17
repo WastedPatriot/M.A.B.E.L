@@ -1,19 +1,22 @@
-from core.plugin_base import PluginBase
 import subprocess
+import socket
 
-class NetworkScannerPlugin(PluginBase):
+class NetworkScannerPlugin:
     @property
-    def name(self): return "Network Scanner"
+    def name(self):
+        return "Network Scanner"
     @property
-    def description(self): return "Scans a target IP or subnet for open ports and services using Nmap."
-
-    def run(self, target="127.0.0.1", **kwargs):
+    def description(self):
+        return "Scans a target IP or hostname using nmap. Args: target"
+    def run(self, target, **kwargs):
+        # Try to resolve domain to IP (if it's not already an IP)
         try:
-            cmd = ["nmap", "-T4", "-A", target]
-            result = subprocess.check_output(cmd, universal_newlines=True)
-            return result
-        except Exception as e:
-            return f"Network scan failed: {e}"
+            ip = socket.gethostbyname(target)
+        except Exception:
+            ip = target  # Use as-is if not resolvable
+        cmd = f"nmap -Pn {ip}"
+        result = subprocess.getoutput(cmd)
+        return f"Scan result for {target}:\n{result}"
 
 def get_plugin():
     return NetworkScannerPlugin()
